@@ -20,7 +20,23 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        # Preparar layout dentro del scroll area
+        self.ui.pushButton.setText("Enviar")
+        self.recent_stops = []
+
+        self.grid_buttons = [
+            self.ui.pushButton_2,
+            self.ui.pushButton_3,
+            self.ui.pushButton_4,
+            self.ui.pushButton_5,
+            self.ui.pushButton_6,
+            self.ui.pushButton_7,
+        ]
+
+        for button in self.grid_buttons:
+            button.setText("-")
+            button.setEnabled(False)
+
+        
         contents = self.ui.scrollArea.widget()
         if contents.layout() is None:
             self.results_layout = QVBoxLayout(contents)
@@ -35,6 +51,21 @@ class MainWindow(QMainWindow):
         if not stop_text:
             self._show_message("Introduce el número de parada.")
             return
+        
+        if stop_text in self.recent_stops:
+            self.recent_stops.remove(stop_text)
+        self.recent_stops.insert(0,stop_text)
+        self.recent_stops = self.recent_stops[:len(self.grid_buttons)]
+
+        for i, button in enumerate(self.grid_buttons):
+            if i< len(self.recent_stops):
+                button.setText(self.recent_stops[i])
+                button.setEnabled(True)
+                button.clicked.disconnect() if button.receivers(button.clicked) > 0 else None
+                button.clicked.connect(lambda checked, s=self.recent_stops[i]: self.buscar(s))
+    def buscar(self, stop_text):
+        self.ui.lineEdit.setText(stop_text)
+        self.on_fetch_pressed()
 
         url = f"https://www.emtpalma.cat/maas/api/v1/agency/stops/{stop_text}/timestr"
 
@@ -56,17 +87,9 @@ class MainWindow(QMainWindow):
 
             self._clear_results()
 
-            if not data:
-                self._show_message("No hay vehículos próximos.")
-                return
-
             for entry in data:
                 line = entry.get("lineCode", "—")
                 vehicles = entry.get("vehicles", [])
-                if not vehicles:
-                    lbl = QLabel(f"Línea {line}: sin vehículos próximos")
-                    self.results_layout.addWidget(lbl)
-                    continue
 
                 for v in vehicles:
                     seconds = v.get("seconds")
@@ -85,7 +108,7 @@ class MainWindow(QMainWindow):
                         minutes_text = "—"
 
                     meters_text = f" · {meters} m" if meters is not None else ""
-                    text = f"L{line} — {minutes_text} — {destination}{meters_text}"
+                    text = f"Linea {line} — {destination}             {minutes_text}"
                     lbl = QLabel(text)
                     self.results_layout.addWidget(lbl)
 
