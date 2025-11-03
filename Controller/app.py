@@ -21,6 +21,8 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        self.line_colors = self.obtener_colores_lineas()
+
         self.ui.pushButton.clicked.connect(self.on_fetch_pressed)
         self.ui.pushButton.setText("Enviar")
         self.ui.label_2.setText("Historial:")
@@ -54,6 +56,37 @@ class MainWindow(QMainWindow):
         self.ui.scrollArea.setMinimumSize(550,150)
         self.ui.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
 
+
+    def obtener_colores_lineas(self):
+        url = "https://www.emtpalma.cat/maas/api/v1/agency/lines/"
+        try:
+            headers = {
+                "Authorization": TOKEN,
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "application/json"
+            }
+            resp = requests.get(url, headers=headers, timeout=10)
+            if resp.status_code != 200:
+                print("No se pudieron cargar los colores de las líneas")
+                return {}
+
+            data = resp.json()
+            colores = {}
+            for linea in data:
+                print(linea)
+                code = str(linea.get("code"))
+                color_hex = linea.get("routeColor")
+                if color_hex:
+                    color = f"#{color_hex}"
+                else:
+                    color = "#000000"
+
+                colores[code] = color
+
+            return colores
+        except Exception as e:
+            print(f"Error al cargar colores de líneas: {e}")
+            return {}
     def on_fetch_pressed(self):
         stop_text = self.ui.lineEdit.text().strip()
 
@@ -124,8 +157,10 @@ class MainWindow(QMainWindow):
                     else:
                         minutes_text = "—"
 
-                    text = f"Linea {line} — {destination}             {minutes_text}"
+                    text = f"Linea {line} — {destination}           {minutes_text}"
                     lbl = QLabel(text)
+                    
+                    lbl.setStyleSheet(f"color: {self.line_colors[line]};")
                     self.results_layout.addWidget(lbl)
 
         except Exception as e:
