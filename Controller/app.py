@@ -7,6 +7,7 @@ import requests
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout
+from PyQt6 import QtCore
 from View.main_Window_ui import Ui_MainWindow
 
 
@@ -20,7 +21,9 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        self.ui.pushButton.clicked.connect(self.on_fetch_pressed)
         self.ui.pushButton.setText("Enviar")
+        self.ui.label_2.setText("Historial:")
         self.recent_stops = []
 
         self.grid_buttons = [
@@ -44,10 +47,17 @@ class MainWindow(QMainWindow):
         else:
             self.results_layout = contents.layout()
 
-        self.ui.pushButton.clicked.connect(self.on_fetch_pressed)
+
+
+    
+        self.setMinimumSize(550,350)
+        self.ui.scrollArea.setMinimumSize(550,150)
+        self.ui.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
 
     def on_fetch_pressed(self):
         stop_text = self.ui.lineEdit.text().strip()
+
+        
         if not stop_text:
             self._show_message("Introduce el número de parada.")
             return
@@ -59,13 +69,20 @@ class MainWindow(QMainWindow):
 
         for i, button in enumerate(self.grid_buttons):
             if i< len(self.recent_stops):
+                #s = self.recent_stops[i]
+                #button.setText(s)
+
                 button.setText(self.recent_stops[i])
                 button.setEnabled(True)
-                button.clicked.disconnect() if button.receivers(button.clicked) > 0 else None
-                button.clicked.connect(lambda checked, s=self.recent_stops[i]: self.buscar(s))
+                try:
+                    button.clicked.disconnect() #if button.receivers(button.clicked) > 0 else None
+                except Exception:
+                    button.clicked.connect(lambda checked, s=self.recent_stops[i]: self.buscar(s))
+
+                self.buscar(stop_text)
     def buscar(self, stop_text):
         self.ui.lineEdit.setText(stop_text)
-        self.on_fetch_pressed()
+        #self.on_fetch_pressed()
 
         url = f"https://www.emtpalma.cat/maas/api/v1/agency/stops/{stop_text}/timestr"
 
@@ -107,7 +124,6 @@ class MainWindow(QMainWindow):
                     else:
                         minutes_text = "—"
 
-                    meters_text = f" · {meters} m" if meters is not None else ""
                     text = f"Linea {line} — {destination}             {minutes_text}"
                     lbl = QLabel(text)
                     self.results_layout.addWidget(lbl)
