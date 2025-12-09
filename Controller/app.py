@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout
 from PyQt6 import QtCore
 #from View.main_Window_ui import Ui_MainWindow
 from View.mainWindowUi2 import Ui_MainWindow
+from View.map_window import MapWindow
 
 
 TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJzdWIiOiI3ODQ1ODUiLCJpYXQiOjE3NjE1NjkzNzcsImV4cCI6MzMzOTQ0OTM3NywidXNlcm5hbWUiOiIxNzYxNTY5Mzc3NTE0M0ZLMUlJSVo0MEo2V0tCNklSNlUiLCJ0b2tlbl9kZXZpY2UiOiJmNTJiMjdiZjQyMjNjNTdhYWUxNDg4ZjU3OGE2OTdjNDk3OWIzNTNlZjZjODEyZmQwMTM3NGNlNGY2ODE5OWE1IiwiZGV2aWNlX3R5cGVfaWQiOjMsInJvbGVzIjoiQU5PTklNTyJ9.CxsRngyK_nO4sJ0CIk8KTvT5wajMlddceH2dgNVJCyZjSj6LnahPar4deHSfr1In"
@@ -178,6 +179,10 @@ class MainWindow(QMainWindow):
         self._clear_results()
         lbl = QLabel(text)
         self.results_layout.addWidget(lbl)
+    
+    def abrir_mapa(self):
+        self.map_window = MapWindow()
+        self.map_window.show()
 
 
 if __name__ == "__main__":
