@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
         self.map_window = None
 
         # Generamos el HTML del mapa solo una vez
-        self.map_file = "C:/Users/Samuel/Documents/GitHub/EmtApp/mapa_test.html"
+        self.map_file = "C:/Users/Alumne/Documents/GitHub/EmtApp/mapa_test.html"
         self.generate_map_html()
 
     def generate_map_html(self):

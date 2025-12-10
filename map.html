@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_5a2b73c0121790c029e3ff7067519963 {
+                #map_b9f74b0516b3b0ba6799f626f1deca64 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -50,23 +50,27 @@
             </script>
 
         
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-locatecontrol/0.66.2/L.Control.Locate.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-locatecontrol/0.66.2/L.Control.Locate.min.css"/>
 </head>
 <body>
     
     
-            <div class="folium-map" id="map_5a2b73c0121790c029e3ff7067519963" ></div>
+            <div class="folium-map" id="map_b9f74b0516b3b0ba6799f626f1deca64" ></div>
         
 </body>
 <script>
     
     
-            var map_5a2b73c0121790c029e3ff7067519963 = L.map(
-                "map_5a2b73c0121790c029e3ff7067519963",
+            var map_b9f74b0516b3b0ba6799f626f1deca64 = L.map(
+                "map_b9f74b0516b3b0ba6799f626f1deca64",
                 {
-                    center: [39.57, 2.65],
+                    center: [40.7128, -74.006],
                     crs: L.CRS.EPSG3857,
                     ...{
-  "zoom": 13,
+  "zoom": 12,
   "zoomControl": true,
   "preferCanvas": false,
 }
@@ -78,7 +82,7 @@
 
         
     
-            var tile_layer_10dd6bae5cf99bacf0c7a93a5fce39a4 = L.tileLayer(
+            var tile_layer_d6d792d438e47103020d1724d8366f62 = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
   "minZoom": 0,
@@ -95,24 +99,67 @@
             );
         
     
-            tile_layer_10dd6bae5cf99bacf0c7a93a5fce39a4.addTo(map_5a2b73c0121790c029e3ff7067519963);
+            tile_layer_d6d792d438e47103020d1724d8366f62.addTo(map_b9f74b0516b3b0ba6799f626f1deca64);
         
     
-            var marker_81f04dc9fff07a0d8069acc4b91294f4 = L.marker(
-                [39.57, 2.65],
+            var marker_d6a62f9ecb56a00c4968cfeb9e9aba6d = L.marker(
+                [40.7128, -74.006],
                 {
 }
-            ).addTo(map_5a2b73c0121790c029e3ff7067519963);
+            ).addTo(map_b9f74b0516b3b0ba6799f626f1deca64);
         
     
-            marker_81f04dc9fff07a0d8069acc4b91294f4.bindTooltip(
-                `<div>
-                     Palma de Mallorca
-                 </div>`,
+            var icon_70a91e5b13a7be1378d03a05c5bedb9f = L.AwesomeMarkers.icon(
                 {
-  "sticky": true,
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
 }
             );
+        
+    
+        var popup_26d34e5b350b84f77b0b6f3a20fdf60b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_f28b9ceecb0721b5cb60cad2809e7f65 = $(`<div id="html_f28b9ceecb0721b5cb60cad2809e7f65" style="width: 100.0%; height: 100.0%;">Selected Location</div>`)[0];
+                popup_26d34e5b350b84f77b0b6f3a20fdf60b.setContent(html_f28b9ceecb0721b5cb60cad2809e7f65);
+            
+        
+
+        marker_d6a62f9ecb56a00c4968cfeb9e9aba6d.bindPopup(popup_26d34e5b350b84f77b0b6f3a20fdf60b)
+        ;
+
+        
+    
+    
+                marker_d6a62f9ecb56a00c4968cfeb9e9aba6d.setIcon(icon_70a91e5b13a7be1378d03a05c5bedb9f);
+            
+    
+            var circle_ca0977049a6ebfd45db73242dce3cdc0 = L.circle(
+                [40.7128, -74.006],
+                {"bubblingMouseEvents": true, "color": "crimson", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "crimson", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 1000, "stroke": true, "weight": 3}
+            ).addTo(map_b9f74b0516b3b0ba6799f626f1deca64);
+        
+    
+            L.control.fullscreen(
+                {
+  "position": "topleft",
+  "title": "Full Screen",
+  "titleCancel": "Exit Full Screen",
+  "forceSeparateButton": false,
+}
+            ).addTo(map_b9f74b0516b3b0ba6799f626f1deca64);
+        
+    
+            var locate_control_86b009398903eaace79ec4191422c67b = L.control.locate(
+                {}
+            ).addTo(map_b9f74b0516b3b0ba6799f626f1deca64);
+            
         
 </script>
 </html>
