@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout,
 from PyQt6.QtCore import QObject, pyqtSignal, Qt, QThread, pyqtSlot
 from PyQt6 import QtCore
 from View.mainWindowUi2 import Ui_MainWindow
+from View.mapView import MapWindow
 
 
 TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJzdWIiOiI3ODQ1ODUiLCJpYXQiOjE3NjE1NjkzNzcsImV4cCI6MzMzOTQ0OTM3NywidXNlcm5hbWUiOiIxNzYxNTY5Mzc3NTE0M0ZLMUlJSVo0MEo2V0tCNklSNlUiLCJ0b2tlbl9kZXZpY2UiOiJmNTJiMjdiZjQyMjNjNTdhYWUxNDg4ZjU3OGE2OTdjNDk3OWIzNTNlZjZjODEyZmQwMTM3NGNlNGY2ODE5OWE1IiwiZGV2aWNlX3R5cGVfaWQiOjMsInJvbGVzIjoiQU5PTklNTyJ9.CxsRngyK_nO4sJ0CIk8KTvT5wajMlddceH2dgNVJCyZjSj6LnahPar4deHSfr1In"
@@ -295,9 +296,89 @@ class MainWindow(QMainWindow):
            """)
             
             button.clicked.connect(
-                lambda checked, dir_data=direction: self.on_direction_clicked(dir_data)
+                lambda checked, subline=direction: self.on_subline_clicked(subline)
             )
             self.sublines_layout.addWidget(button)
+    def on_subline_clicked(self, subline_data):
+        
+        subline_id = subline_data.get("subLineId")
+        subline_name = subline_data.get("shortName", "Dirección")
+
+        if not subline_id:
+            return
+
+        self._show_sublines_message(f"🔄 Cargando direcciones de {subline_name}...")
+
+        url = (
+            f"https://www.emtpalma.cat/maas/api/v1/agency/lines/directions-subline?subLineId={subline_id}"
+        )
+
+        headers = {
+            "Authorization": TOKEN,
+            "User-Agent": "Mozilla/5.0",
+            "Accept": "application/json"
+        }
+
+        self.api_worker = APIWorker(url, headers)
+        self.api_worker.data_ready.connect(
+            lambda data: self.on_subline_directions_loaded(data, subline_name)
+        )
+        self.api_worker.error_occurred.connect(
+            lambda error: self._show_sublines_message(f"❌ Error: {error}")
+        )
+        self.api_worker.start()
+
+    def on_subline_directions_loaded(self, directions_data, subline_name):
+        self._clear_sublines()
+
+        if not directions_data:
+            self._show_sublines_message("ℹ️ No hay direcciones disponibles")
+            return
+
+        title = QLabel(f"🧭 Direcciones de {subline_name}")
+        title.setStyleSheet("""
+            QLabel {
+                background-color: #007cba;
+                color: white;
+                padding: 8px;
+                font-weight: bold;
+                border-radius: 4px;
+                margin-bottom: 6px;
+            }
+        """)
+        self.sublines_layout.addWidget(title)
+
+        for d in directions_data:
+            headsign = d.get("headSign", "Dirección")
+            trip_id = d.get("tripId")
+
+            btn = QPushButton(f"{headsign}")
+            btn.setStyleSheet("""
+                QPushButton {
+                    padding: 10px;
+                    border-radius: 6px;
+                    background-color: #f1f3f5;
+                    border: 2px solid #007cba;
+                    text-align: left;
+                }
+                QPushButton:hover {
+                    background-color: #007cba;
+                    color: white;
+                }
+            """)
+
+            btn.clicked.connect(
+                lambda checked, t=trip_id, name=headsign:
+                    self.load_route_and_show_map(
+                        self.current_line_data["id"],
+                        t,
+                        self.line_colors.get(str(self.current_line_data["code"]), "#007cba"),
+                        self.current_line_data["name"],
+                        name
+                    )
+            )
+
+            self.sublines_layout.addWidget(btn)
 
     def on_direction_clicked(self, direction_data):
        
@@ -307,18 +388,10 @@ class MainWindow(QMainWindow):
         line_code = str(self.current_line_data.get("code", ""))
         line_id = self.current_line_data.get("id", "")
         line_name = self.current_line_data.get("name", f"Línea {line_code}")
-        direction_id = direction_data.get("id", "")
+        direction_id = direction_data.get("subLineId", "")
         direction_name = direction_data.get("name", "")
         line_color = self.line_colors.get(line_code, "#007cba")
-        
-        
-        QMessageBox.information(
-            self, 
-            "Cargando Mapa", 
-            f"Cargando mapa de {line_name}\nDirección: {direction_name}\n\nEsto puede tardar unos segundos..."
-        )
-        
-        
+
         self.load_route_and_show_map(line_id, direction_id, line_color, line_name, direction_name)
 
     def load_route_and_show_map(self, line_id, direction_id, line_color, line_name, direction_name):
@@ -348,7 +421,7 @@ class MainWindow(QMainWindow):
             
             # Mapa
             if self.map_window is None:
-                self.map_window = MapWindow() # TO DO
+                self.map_window = MapWindow(latitude=39.571, longitude=2.650, zoom_start=13) 
                 self.map_window.stop_clicked.connect(self.on_map_stop_clicked)
             
             
