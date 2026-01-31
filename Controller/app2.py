@@ -10,6 +10,8 @@ from PyQt6.QtCore import QObject, pyqtSignal, Qt, QThread, pyqtSlot
 from PyQt6 import QtCore
 from View.mainWindowUi2 import Ui_MainWindow
 from View.mapView import MapWindow
+from PyQt6.QtGui import QShortcut, QKeySequence
+
 
 
 TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJzdWIiOiI3ODQ1ODUiLCJpYXQiOjE3NjE1NjkzNzcsImV4cCI6MzMzOTQ0OTM3NywidXNlcm5hbWUiOiIxNzYxNTY5Mzc3NTE0M0ZLMUlJSVo0MEo2V0tCNklSNlUiLCJ0b2tlbl9kZXZpY2UiOiJmNTJiMjdiZjQyMjNjNTdhYWUxNDg4ZjU3OGE2OTdjNDk3OWIzNTNlZjZjODEyZmQwMTM3NGNlNGY2ODE5OWE1IiwiZGV2aWNlX3R5cGVfaWQiOjMsInJvbGVzIjoiQU5PTklNTyJ9.CxsRngyK_nO4sJ0CIk8KTvT5wajMlddceH2dgNVJCyZjSj6LnahPar4deHSfr1In"
@@ -45,6 +47,8 @@ class MainWindow(QMainWindow):
         
         self.setWindowTitle("EMT Palma - Consulta de Líneas y Paradas")
         self.setMinimumSize(600, 400)
+        self.statusBar().showMessage("Aplicación lista")
+
         
         # Datos y estado
         self.line_colors = {}
@@ -55,8 +59,12 @@ class MainWindow(QMainWindow):
         
         self.setup_first_tab()
         self.setup_second_tab()
+        self.setup_shortcuts()
+
         
         self.load_initial_data()
+        self.statusBar().showMessage("Solicitando líneas EMT…")
+
 
     def setup_first_tab(self):
         
@@ -99,6 +107,21 @@ class MainWindow(QMainWindow):
         self.ui.scrollArea.setMinimumSize(400, 200)
         self.ui.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
 
+        self.ui.lineEdit.setAccessibleName("Número de parada")
+        self.ui.lineEdit.setAccessibleDescription(
+            "introducir el número de parada"
+        )
+
+        self.ui.pushButton.setAccessibleName("Buscar parada")
+        self.ui.pushButton.setAccessibleDescription(
+            "consultar los próximos autobuses"
+        )
+
+        self.ui.scrollArea.setAccessibleName("Resultados de la parada")
+        self.ui.scrollArea.setAccessibleDescription(
+            "Lista de líneas y tiempos de espera"
+        )
+
     def setup_second_tab(self):
        #segunda pestaña
         
@@ -120,6 +143,34 @@ class MainWindow(QMainWindow):
             sublines_contents.setLayout(self.sublines_layout)
         else:
             self.sublines_layout = sublines_contents.layout()
+            
+    def setup_shortcuts(self):
+        self.shortcuts = []
+
+        # Alt + S
+        self.shortcuts.append(
+            QShortcut(QKeySequence("Alt+S"), self, activated=self.ui.lineEdit.setFocus)
+        )
+
+        # F5
+        self.shortcuts.append(
+            QShortcut(QKeySequence("F5"), self, activated=self.reload_current_stop)
+        )
+
+        # Ctrl + 1
+        for i, button in enumerate(self.grid_buttons, start=1):
+            self.shortcuts.append(
+                QShortcut(
+                    QKeySequence(f"Ctrl+{i}"),
+                    self,
+                    activated=button.click
+                )
+            )
+    def reload_current_stop(self):
+        stop = self.ui.lineEdit.text().strip()
+        if stop:
+            self.buscar(stop)
+
 
     def load_initial_data(self):
        #Colores i lineas
@@ -161,6 +212,8 @@ class MainWindow(QMainWindow):
             
         except Exception as e:
             self.on_lines_error(f"Error procesando datos: {e}")
+        self.statusBar().showMessage("Líneas cargadas correctamente")
+
 
     @pyqtSlot(str)
     def on_lines_error(self, error_msg):
