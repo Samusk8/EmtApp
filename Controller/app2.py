@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, 
                             QPushButton, QScrollArea, QWidget, QMessageBox)
-from PyQt6.QtCore import QObject, pyqtSignal, Qt, QThread, pyqtSlot
+from PyQt6.QtCore import QObject, pyqtSignal, Qt, QThread, pyqtSlot, QStandardPaths, QDir
 from PyQt6 import QtCore
 from View.mainWindowUi2 import Ui_MainWindow
 from View.mapView import MapWindow
@@ -41,6 +41,19 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        
+        app_name = "EMTApp"
+
+        base_path = QStandardPaths.writableLocation(
+            QStandardPaths.StandardLocation.AppDataLocation
+        )
+
+        app_data_path = os.path.join(base_path, app_name)
+        QDir().mkpath(app_data_path)
+
+        self.db_path = os.path.join(app_data_path, "database.sqlite")
+
+        print("Database path:", self.db_path)
         
         
         self.setWindowTitle("EMT Palma - Consulta de Líneas y Paradas")

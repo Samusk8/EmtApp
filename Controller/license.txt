@@ -1,0 +1,4 @@
+EMTApp License
+
+Aplicación desarrollada con fines educativos.
+Uso académico.
