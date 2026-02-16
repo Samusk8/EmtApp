@@ -1,4 +1,9 @@
-EMTApp License
-
-Aplicación desarrollada con fines educativos.
-Uso académico.
+EMTApp License Agreement
+Versión 1.0
+Al instalar, ejecutar o incluso mirar de reojo esta aplicación (en adelante, “el Software”), el usuario acepta los presentes términos y condiciones, redactados en un formato deliberadamente largo, denso y lo suficientemente tedioso como para que la mayoría de personas decida continuar sin leer en detalle.
+Este Software se proporciona con fines educativos, experimentales y de entretenimiento razonablemente inofensivo. El autor ha intentado que funcione correctamente en la mayoría de sistemas conocidos en el planeta Tierra, pero no puede garantizar su funcionamiento en todos los equipos, configuraciones, dimensiones paralelas o entornos con condiciones gravitacionales inusuales.
+El usuario acepta que el uso del Software es completamente voluntario y bajo su propia responsabilidad. El autor no se hace responsable de daños directos o indirectos derivados del uso o mal uso de la aplicación, incluyendo pero no limitado a: pérdida de datos, pérdida de tiempo, frustración tecnológica, confusión existencial, interrupciones en el flujo de trabajo, ni consecuencias imprevistas de cualquier naturaleza razonablemente improbable.
+Asimismo, el autor declina toda responsabilidad por eventos extraordinarios o altamente improbables que pudieran coincidir temporalmente con el uso del Software, tales como: fallos eléctricos, caídas de conexión, desaparición repentina de la motivación, resfriados oportunistas, mala sincronización con el transporte público, o cualquier otra circunstancia desafortunada que el usuario decida correlacionar causalmente con la ejecución de la aplicación.
+En términos generales, el Software se distribuye “tal cual”, sin garantías explícitas ni implícitas de ningún tipo. El usuario acepta que la instalación y uso del programa implica la comprensión de que ningún software es perfecto, que la vida es compleja y que, en caso de duda, cerrar y volver a abrir la aplicación suele ser una estrategia sorprendentemente efectiva.
+El uso continuado del Software implica la aceptación íntegra de estos términos, incluidos aquellos que el usuario haya decidido saltarse por pereza, exceso de confianza o fe en que “seguro que no pone nada importante aquí”.
+Gracias por utilizar EMTApp.
