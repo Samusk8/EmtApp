@@ -14,8 +14,20 @@ A desktop application developed with Python and PyQt6 that allows users to check
 <p align="center">
   <img src="https://upload.wikimedia.org/wikipedia/commons/b/bf/Logo_EMT_Palma_2019.png" alt="Logo EMT Palma" width="200">
 </p>
+<p align="center">
+  <a href="installer/EMTApp_Installer.exe">
+    <img src="https://img.shields.io/badge/Descargar%20Instalador-Windows-blue?style=for-the-badge">
+  </a>
+  
+  <a href="Controller/license.txt">
+    <img src="https://img.shields.io/badge/Licencia-grey?style=for-the-badge">
+  </a>
+</p>
+
+
 
 ---
+
 
 ## 📌 Usages
 
